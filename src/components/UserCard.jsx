@@ -14,6 +14,7 @@ import { Link as RouterLink } from "react-router-dom";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import BusinessIcon from "@mui/icons-material/Business";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { API_PREFIX, TWITTER_URL } from "../config/constants";
 
 export const UserCard = () => {
   const [userData, setUserData] = useState(null);
@@ -21,7 +22,7 @@ export const UserCard = () => {
   const { username } = useParams();
 
   useEffect(() => {
-    fetch(`https://api.github.com/users/${username}`)
+    fetch(`${API_PREFIX}users/${username}`)
       .then((res) => res.json())
       .then((data) => {
         setUserData(data);
@@ -90,7 +91,14 @@ export const UserCard = () => {
                   {userData.twitter_username && (
                     <Typography variant="body2" display="flex" gap={1}>
                       <TwitterIcon fontSize="small" />
-                      {userData.twitter_username}
+                      <Link
+                        href={`${TWITTER_URL}${userData.twitter_username}`}
+                        underline="hover"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {userData.twitter_username}
+                      </Link>
                     </Typography>
                   )}
                 </Stack>

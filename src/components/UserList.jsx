@@ -14,20 +14,23 @@ import {
   AlertTitle,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+import { API_PREFIX } from "../config/constants";
 
 export const UserList = () => {
   const [userList, setUserList] = useState([]);
+  const [isError, setIsError] = useState(false);
 
   const getUsers = async () => {
     try {
-      const res = await fetch("https://api.github.com/users");
+      const res = await fetch(`${API_PREFIX}users`);
       if (res.status !== 200) {
         throw new Error("API rate limit exceeded");
       }
-      setUserList(res.json());
+      const data = await res.json();
+      setUserList(data);
     } catch (ex) {
       console.error("Exception", ex);
-      setUserList([]);
+      setIsError(true);
     }
   };
 
@@ -44,11 +47,13 @@ export const UserList = () => {
       </AppBar>
       <Box mt={7} sx={{ width: "300px" }}>
         <List>
-          {userList.length === 0 ? (
+          {isError === true ? (
             <Alert severity="error">
               <AlertTitle>Error</AlertTitle>
               Something went wrong
             </Alert>
+          ) : userList.length === 0 ? (
+            <Typography variant="h6">Loading ...</Typography>
           ) : (
             <>
               {userList.map((user) => (
